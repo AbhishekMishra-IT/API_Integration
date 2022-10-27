@@ -8,8 +8,25 @@ import {
 } from 'react-native';
 import { Card, Header } from '../../components';
 import { Color } from '../../helper';
+import * as API from '../../services/Api';
 
 const UserList = ({ navigation }) => {
+    const [userList, setUserList] = useState([])
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        setLoading(true)
+        API.userData()
+            .then(response => {
+                setUserList(response.data)
+                setLoading(false)
+            })
+            .catch(error => {
+                setLoading(false)
+                console.log(error);
+
+            });
+    }, [])
     
     if (loading)
         return (

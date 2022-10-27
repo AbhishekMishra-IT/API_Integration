@@ -7,6 +7,7 @@ import {
     Text
 } from 'react-native';
 import { Card, Header } from '../../components';
+import * as API from "../../services/Api";
 
 const Details = (props) => {
     return (
@@ -58,4 +59,4 @@ const UserDetails = ({ navigation, route }) => {
 
     )
 }
-export default UserDetails
+export default UserDetails;

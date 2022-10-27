@@ -12,12 +12,74 @@ import {
 
 import { Header } from '../../components/index';
 import { Color } from '../../helper';
+import * as API from '../../services/Api';
 import { Toast, Root } from "native-base";
 
 
 
 const AddUser = ({ navigation, route }) => {
-    
+    const [loading, setLoading] = useState(false);
+    const [title, setTitle] = useState(null);
+    const [body, setBody] = useState(null);
+
+    useEffect(() => {
+        if (route.params.edit) {
+            const { edit, data } = route.params
+            if (edit) {
+                setTitle(data.title)
+                setBody(data.body)
+            }
+        }
+    }, [])
+    function ToastShow(msg) {
+        Toast.show({
+            text: msg,
+            type: 'danger'
+        })
+    }
+    function createPost() {
+
+        if (!title) {
+            ToastShow('Please enter Post title')
+        } else {
+            var regex = /^[A-Za-z0-9 ]+$/
+            if (body && regex.test(body)) {
+                const data = {
+                    id: Math.random(),
+                    userId: route.params.userId,
+                    title: title,
+                    body: body,
+                };
+                API.addPost(data)
+                    .then(response => {
+                        navigation.navigate('Post', { post: data })
+                    })
+                    .catch(error => {
+                        console.log(error);
+
+                    });
+            } else {
+                ToastShow('Please enter Post description, not allowed special character')
+            }
+        }
+    }
+    function editPost() {
+        console.log('route__', route.params)
+        const data = {
+            id: route.params.data.id,
+            userId: route.params.userId,
+            title: title,
+            body: body,
+        };
+        API.updatePost(data, route.params.data.id)
+            .then(response => {
+                navigation.navigate('Post', { postEdit: data })
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
     return (
         <Root>
             <SafeAreaView >
